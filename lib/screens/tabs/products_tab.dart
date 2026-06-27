@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../../api/admin_products_api.dart';
@@ -22,6 +23,7 @@ class _ProductsTabState extends State<ProductsTab> {
   List<AdminProduct> _products = [];
   bool _loading = false;
   String? _error;
+  Timer? _searchDebounce;
 
   @override
   void initState() {
@@ -31,8 +33,16 @@ class _ProductsTabState extends State<ProductsTab> {
 
   @override
   void dispose() {
+    _searchDebounce?.cancel();
     _searchController.dispose();
     super.dispose();
+  }
+
+  void _onSearchChanged(String value) {
+    _searchDebounce?.cancel();
+    _searchDebounce = Timer(const Duration(milliseconds: 400), () {
+      _loadProducts(query: value.trim().length >= 2 ? value : null);
+    });
   }
 
   Future<void> _loadProducts({String? query}) async {
@@ -93,7 +103,7 @@ class _ProductsTabState extends State<ProductsTab> {
                 Expanded(
                   child: TextField(
                     controller: _searchController,
-                    onChanged: (value) => _loadProducts(query: value),
+                    onChanged: _onSearchChanged,
                     decoration: InputDecoration(
                       hintText: 'Поиск товара или кода',
                       filled: true,

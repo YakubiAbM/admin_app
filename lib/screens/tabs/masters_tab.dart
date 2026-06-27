@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../../api/admin_dashboard_api.dart';
@@ -17,6 +18,7 @@ class _MastersTabState extends State<MastersTab> {
   List<AdminMaster> _masters = [];
   bool _loading = true;
   String? _error;
+  Timer? _searchDebounce;
 
   @override
   void initState() {
@@ -26,8 +28,14 @@ class _MastersTabState extends State<MastersTab> {
 
   @override
   void dispose() {
+    _searchDebounce?.cancel();
     _searchController.dispose();
     super.dispose();
+  }
+
+  void _onSearchChanged(String value) {
+    _searchDebounce?.cancel();
+    _searchDebounce = Timer(const Duration(milliseconds: 400), () => _load());
   }
 
   Future<void> _load() async {
@@ -71,6 +79,7 @@ class _MastersTabState extends State<MastersTab> {
                     onPressed: _load,
                   ),
                 ),
+                onChanged: _onSearchChanged,
                 onSubmitted: (_) => _load(),
               ),
             ),
