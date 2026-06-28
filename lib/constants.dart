@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 /// Тот же сервер, что и клиентское приложение.
-const String baseUrl = 'https://wine-abstracts-que-ministers.trycloudflare.com';
+const String baseUrl = 'https://khushrang.tj';
 
 const String kAppIconAsset = 'assets/icon.png';
 const String kSplashAsset = 'assets/splash.png';
