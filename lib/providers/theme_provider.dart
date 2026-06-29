@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class AdminThemeProvider with ChangeNotifier {
   static const _key = 'admin_dark_theme';
 
-  bool _isDark = false;
+  bool _isDark = true;
   bool get isDark => _isDark;
 
   AdminThemeProvider() {
@@ -13,7 +13,7 @@ class AdminThemeProvider with ChangeNotifier {
 
   Future<void> _load() async {
     final prefs = await SharedPreferences.getInstance();
-    _isDark = prefs.getBool(_key) ?? false;
+    _isDark = prefs.getBool(_key) ?? true;
     notifyListeners();
   }
 

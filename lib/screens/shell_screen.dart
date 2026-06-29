@@ -45,37 +45,11 @@ class _ShellScreenState extends State<ShellScreen> {
     ];
 
     return Scaffold(
-      body: Stack(
-        children: [
-          IndexedStack(index: _index, children: tabs),
-          Positioned(
-            top: MediaQuery.paddingOf(context).top + 4,
-            right: 12,
-            child: Material(
-              color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.92),
-              borderRadius: BorderRadius.circular(12),
-              elevation: 2,
-              child: IconButton(
-                tooltip: widget.themeProvider.isDark
-                    ? 'Светлая тема'
-                    : 'Тёмная тема',
-                onPressed: widget.themeProvider.toggle,
-                icon: Icon(
-                  widget.themeProvider.isDark
-                      ? Icons.light_mode_outlined
-                      : Icons.dark_mode_outlined,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
+      body: IndexedStack(index: _index, children: tabs),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           border: Border(
-            top: BorderSide(
-              color: Theme.of(context).dividerColor,
-            ),
+            top: BorderSide(color: Colors.white.withValues(alpha: 0.08)),
           ),
         ),
         child: NavigationBar(
@@ -94,13 +68,32 @@ class _ShellScreenState extends State<ShellScreen> {
         ),
       ),
       floatingActionButton: _index == 0
-          ? FloatingActionButton.small(
-              onPressed: () {
-                AdminAuthApi.logout();
-                widget.onLogout();
-              },
-              backgroundColor: AppColors.cardElevated,
-              child: const Icon(Icons.logout, color: AppColors.textSecondary),
+          ? Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                FloatingActionButton.small(
+                  heroTag: 'theme',
+                  onPressed: widget.themeProvider.toggle,
+                  backgroundColor: AppColors.cardElevated,
+                  child: Icon(
+                    widget.themeProvider.isDark
+                        ? Icons.light_mode_outlined
+                        : Icons.dark_mode_outlined,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                FloatingActionButton.small(
+                  heroTag: 'logout',
+                  onPressed: () {
+                    AdminAuthApi.logout();
+                    widget.onLogout();
+                  },
+                  backgroundColor: AppColors.cardElevated,
+                  child: const Icon(Icons.logout, color: AppColors.textSecondary),
+                ),
+              ],
             )
           : null,
     );
@@ -114,21 +107,10 @@ class AdminAppBarActions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PopupMenuButton<String>(
-      icon: const Icon(Icons.more_vert, color: AppColors.textSecondary),
-      color: AppColors.card,
-      onSelected: (value) {
-        if (value == 'logout') {
-          AdminAuthApi.logout();
-          onLogout();
-        }
-      },
-      itemBuilder: (context) => const [
-        PopupMenuItem(
-          value: 'logout',
-          child: Text('Выйти', style: TextStyle(color: AppColors.text)),
-        ),
-      ],
+    return IconButton(
+      icon: const Icon(Icons.logout),
+      tooltip: 'Выход',
+      onPressed: onLogout,
     );
   }
 }
