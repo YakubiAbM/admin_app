@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../api/admin_auth_api.dart';
 import '../constants.dart';
+import '../providers/theme_provider.dart';
 import 'tabs/dashboard_tab.dart';
 import 'tabs/kassa_tab.dart';
 import 'tabs/masters_tab.dart';
@@ -9,9 +10,14 @@ import 'tabs/orders_tab.dart';
 import 'tabs/products_tab.dart';
 
 class ShellScreen extends StatefulWidget {
-  const ShellScreen({super.key, required this.onLogout});
+  const ShellScreen({
+    super.key,
+    required this.onLogout,
+    required this.themeProvider,
+  });
 
   final VoidCallback onLogout;
+  final AdminThemeProvider themeProvider;
 
   @override
   State<ShellScreen> createState() => _ShellScreenState();
@@ -39,11 +45,37 @@ class _ShellScreenState extends State<ShellScreen> {
     ];
 
     return Scaffold(
-      body: IndexedStack(index: _index, children: tabs),
+      body: Stack(
+        children: [
+          IndexedStack(index: _index, children: tabs),
+          Positioned(
+            top: MediaQuery.paddingOf(context).top + 4,
+            right: 12,
+            child: Material(
+              color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.92),
+              borderRadius: BorderRadius.circular(12),
+              elevation: 2,
+              child: IconButton(
+                tooltip: widget.themeProvider.isDark
+                    ? 'Светлая тема'
+                    : 'Тёмная тема',
+                onPressed: widget.themeProvider.toggle,
+                icon: Icon(
+                  widget.themeProvider.isDark
+                      ? Icons.light_mode_outlined
+                      : Icons.dark_mode_outlined,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           border: Border(
-            top: BorderSide(color: Colors.white.withValues(alpha: 0.08)),
+            top: BorderSide(
+              color: Theme.of(context).dividerColor,
+            ),
           ),
         ),
         child: NavigationBar(

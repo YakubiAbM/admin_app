@@ -15,6 +15,13 @@ class AppColors {
   static const Color orange = Color(0xFFFF6900);
   static const Color text = Color(0xFFEEF2FF);
   static const Color textSecondary = Color(0xFF9CA3AF);
+
+  static const Color bgLight = Color(0xFFF5F5F7);
+  static const Color cardLight = Color(0xFFFFFFFF);
+  static const Color cardElevatedLight = Color(0xFFF3F4F6);
+  static const Color inputBgLight = Color(0xFFF3F4F6);
+  static const Color textLight = Color(0xFF111827);
+  static const Color textSecondaryLight = Color(0xFF6B7280);
 }
 
 class AppLayout {

@@ -5,49 +5,65 @@ import 'package:google_fonts/google_fonts.dart';
 import '../constants.dart';
 
 class AdminTheme {
-  static ThemeData get dark {
+  static ThemeData get dark => _build(darkMode: true);
+  static ThemeData get light => _build(darkMode: false);
+
+  static ThemeData _build({required bool darkMode}) {
+    final bg = darkMode ? AppColors.bg : AppColors.bgLight;
+    final card = darkMode ? AppColors.card : AppColors.cardLight;
+    final inputBg = darkMode ? AppColors.inputBg : AppColors.inputBgLight;
+    final text = darkMode ? AppColors.text : AppColors.textLight;
+    final textSecondary =
+        darkMode ? AppColors.textSecondary : AppColors.textSecondaryLight;
+    final borderAlpha = darkMode ? 0.06 : 0.12;
+
     final base = ThemeData(
-      brightness: Brightness.dark,
+      brightness: darkMode ? Brightness.dark : Brightness.light,
       useMaterial3: true,
-      scaffoldBackgroundColor: AppColors.bg,
-      colorScheme: const ColorScheme.dark(
+      scaffoldBackgroundColor: bg,
+      colorScheme: ColorScheme(
+        brightness: darkMode ? Brightness.dark : Brightness.light,
         primary: AppColors.accent,
-        secondary: AppColors.accent,
-        surface: AppColors.card,
-        onSurface: AppColors.text,
         onPrimary: Colors.black,
-        error: Color(0xFFEF4444),
+        secondary: AppColors.accent,
+        onSecondary: Colors.black,
+        error: const Color(0xFFEF4444),
+        onError: Colors.white,
+        surface: card,
+        onSurface: text,
       ),
     );
 
     return base.copyWith(
       textTheme: GoogleFonts.interTextTheme(base.textTheme).apply(
-        bodyColor: AppColors.text,
-        displayColor: AppColors.text,
+        bodyColor: text,
+        displayColor: text,
       ),
-      appBarTheme: const AppBarTheme(
+      appBarTheme: AppBarTheme(
         backgroundColor: Colors.transparent,
         elevation: 0,
         scrolledUnderElevation: 0,
         centerTitle: false,
+        foregroundColor: text,
         systemOverlayStyle: SystemUiOverlayStyle(
           statusBarColor: Colors.transparent,
-          statusBarIconBrightness: Brightness.light,
+          statusBarIconBrightness:
+              darkMode ? Brightness.light : Brightness.dark,
         ),
       ),
       cardTheme: CardThemeData(
-        color: AppColors.card,
+        color: card,
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppLayout.radiusLg),
-          side: BorderSide(color: Colors.white.withValues(alpha: 0.06)),
+          side: BorderSide(color: Colors.black.withValues(alpha: borderAlpha)),
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: AppColors.inputBg,
-        hintStyle: TextStyle(color: AppColors.textSecondary.withValues(alpha: 0.8)),
-        labelStyle: const TextStyle(color: AppColors.textSecondary),
+        fillColor: inputBg,
+        hintStyle: TextStyle(color: textSecondary.withValues(alpha: 0.8)),
+        labelStyle: TextStyle(color: textSecondary),
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppLayout.radiusMd),
@@ -55,7 +71,9 @@ class AdminTheme {
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppLayout.radiusMd),
-          borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.08)),
+          borderSide: BorderSide(
+            color: Colors.black.withValues(alpha: darkMode ? 0.08 : 0.1),
+          ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppLayout.radiusMd),
@@ -79,26 +97,26 @@ class AdminTheme {
         ),
       ),
       navigationBarTheme: NavigationBarThemeData(
-        backgroundColor: AppColors.card,
+        backgroundColor: card,
         indicatorColor: AppColors.accent.withValues(alpha: 0.18),
         labelTextStyle: WidgetStateProperty.resolveWith((states) {
           final selected = states.contains(WidgetState.selected);
           return TextStyle(
             fontSize: 11,
             fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
-            color: selected ? AppColors.accent : AppColors.textSecondary,
+            color: selected ? AppColors.accent : textSecondary,
           );
         }),
         iconTheme: WidgetStateProperty.resolveWith((states) {
           final selected = states.contains(WidgetState.selected);
           return IconThemeData(
-            color: selected ? AppColors.accent : AppColors.textSecondary,
+            color: selected ? AppColors.accent : textSecondary,
             size: 22,
           );
         }),
       ),
       dividerTheme: DividerThemeData(
-        color: Colors.white.withValues(alpha: 0.08),
+        color: Colors.black.withValues(alpha: darkMode ? 0.08 : 0.08),
         thickness: 1,
       ),
     );

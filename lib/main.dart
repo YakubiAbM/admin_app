@@ -3,16 +3,11 @@ import 'package:flutter/services.dart';
 import 'screens/login_screen.dart';
 import 'screens/shell_screen.dart';
 import 'screens/splash_screen.dart';
+import 'providers/theme_provider.dart';
 import 'theme/admin_theme.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setSystemUIOverlayStyle(
-    const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.light,
-    ),
-  );
   runApp(const AdminApp());
 }
 
@@ -24,8 +19,32 @@ class AdminApp extends StatefulWidget {
 }
 
 class _AdminAppState extends State<AdminApp> {
+  final _themeProvider = AdminThemeProvider();
   bool _showSplash = true;
   bool _authorized = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _themeProvider.addListener(_onThemeChanged);
+  }
+
+  @override
+  void dispose() {
+    _themeProvider.removeListener(_onThemeChanged);
+    super.dispose();
+  }
+
+  void _onThemeChanged() {
+    final dark = _themeProvider.isDark;
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: dark ? Brightness.light : Brightness.dark,
+      ),
+    );
+    setState(() {});
+  }
 
   void _onSplashFinished() {
     setState(() => _showSplash = false);
@@ -44,12 +63,20 @@ class _AdminAppState extends State<AdminApp> {
     return MaterialApp(
       title: 'Khushrang Admin',
       debugShowCheckedModeBanner: false,
-      theme: AdminTheme.dark,
+      theme: AdminTheme.light,
+      darkTheme: AdminTheme.dark,
+      themeMode: _themeProvider.isDark ? ThemeMode.dark : ThemeMode.light,
       home: _showSplash
           ? AdminSplashScreen(onFinished: _onSplashFinished)
           : _authorized
-              ? ShellScreen(onLogout: _onLogout)
-              : LoginScreen(onSuccess: _onAuthorized),
+              ? ShellScreen(
+                  onLogout: _onLogout,
+                  themeProvider: _themeProvider,
+                )
+              : LoginScreen(
+                  onSuccess: _onAuthorized,
+                  themeProvider: _themeProvider,
+                ),
     );
   }
 }
